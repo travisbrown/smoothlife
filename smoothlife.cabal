@@ -1,0 +1,28 @@
+name:          smoothlife
+version:       0.0.0
+description:   Smoothlife in Haskell
+copyright:     (c) 2012 Travis Brown
+license-file:  LICENSE.txt
+author:        Travis Brown
+maintainer:    travisrobertbrown@gmail.com
+build-type:    Simple
+cabal-version: >= 1.2
+
+library
+  hs-source-dirs:  src
+  exposed-modules: GenArt.SmoothLife
+  build-depends:
+    ConfigFile >= 1.1.1,
+    base >= 2,
+    cmdargs >= 0.10,
+    filepath,
+    monad-loops >= 0.3.3,
+    random,
+    repa >= 3.2,
+    repa-algorithms >= 3.2,
+    repa-devil >= 0.3.2
+
+executable smoothlife
+  hs-source-dirs:  src
+  main-is:         Main.hs
+
