@@ -24,7 +24,7 @@ smoothLifeMode = SmoothLife
   , input  = def &= name "i" &= typFile &= help "Input image"
   , power2 = 8 &= name "n" &= help "If no input, output will be 2 ^ n square"
   }
-  &= summary "SmoothLife for Haskell v0.0.0, (C) Travis Brown"
+  &= summary "SmoothLife in Haskell v0.0.0, (C) Travis Brown"
   &= verbosity &= details
   [ "A very simple implementation of Stephan Rafler's SmoothLife."
   , "Based on an implementation by Mikola Lysenko."

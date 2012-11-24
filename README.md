@@ -19,6 +19,14 @@ The code is essentially undocumented, there's no error handling to speak of,
 and this is the first time I've used [Repa](http://www.haskell.org/haskellwiki/Numeric_Haskell:_A_Repa_Tutorial),
 so I'm sure what I'm doing with it is horribly inefficient.
 
+A few more concrete things:
+
+ * The input image can be in any format supported by [DevIL](http://hackage.haskell.org/package/repa-devil-0.3.2),
+   but it must be a square whose sides are a power of two, and it must be
+   grayscale.
+ * The program won't overwrite existing files, so you'll have to manually
+   delete the contents of the output directory (or specify a new one).
+
 Examples
 --------
 
@@ -35,4 +43,15 @@ The following should work:
       -c=samples/config.txt -i=samples/squiggles.png -o=output
 
 This will save an image to the `output` after every time step.
+
+You can easily change the rules of the game by editing the config file, or
+providing your own. The current defaults looks like this:
+
+    alphas = 0.127 0.030
+    radii  = 6     6.6
+    birth  = 0.258 0.310
+    death  = 0.010 0.740
+
+These values come from [a comment](http://0fps.wordpress.com/2012/11/19/conways-game-of-life-for-curved-surfaces-part-1/#comment-699)
+on Lysenko's blog post.
 
