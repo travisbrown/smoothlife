@@ -22,9 +22,8 @@ so I'm sure what I'm doing with it is horribly inefficient.
 A few more concrete things:
 
  * The input can be any image format supported by [DevIL](http://hackage.haskell.org/package/repa-devil-0.3.2),
-   but it must be a square whose sides are a power of two, and it must be
-   grayscale.
- * The program won't overwrite existing files, so you'll have to clear the
+   but it must be grayscale, and a square whose sides are a power of two.
+ * The program won't overwrite output files, so you'll have to clear the
    output directory manually between runs (or specify a new one).
 
 Examples
