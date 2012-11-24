@@ -5,6 +5,8 @@ This is a Haskell port of [Mikola Lysenko](http://0fps.wordpress.com/)'s
 [simplified JavaScript implementation](http://0fps.wordpress.com/2012/11/19/conways-game-of-life-for-curved-surfaces-part-1/)
 of Stephan Rafler's [generalization of Conway's Game of Life](http://arxiv.org/abs/1111.1567) to a continuous domain.
 
+![Example output](https://raw.github.com/travisbrown/smoothlife/master/samples/output.png)
+
 It exists because it's Saturday morning on a holiday weekend and I wanted to
 write some Haskell. And also because I think these patterns are beautiful,
 like a weird cross between a slice of a brain and the ornamentation in a
@@ -13,7 +15,7 @@ William Morris woodcut.
 Examples
 --------
 
-![Example output](https://raw.github.com/travisbrown/smoothlife/master/samples/output.png)
+![Example output](https://raw.github.com/travisbrown/smoothlife/master/samples/output.gif)
 
 Usage
 -----
