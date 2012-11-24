@@ -44,7 +44,7 @@ The following should work:
 This will save an image to the `output` after every time step.
 
 You can easily change the rules of the game by editing the config file, or
-providing your own. The current defaults looks like this:
+providing your own. The current defaults look like this:
 
     alphas = 0.127 0.030
     radii  = 6     6.6
