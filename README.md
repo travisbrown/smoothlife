@@ -12,6 +12,13 @@ write some Haskell. And also because I think these patterns are beautiful,
 like a weird cross between a slice of a brain and the ornamentation in a
 William Morris woodcut.
 
+Warnings!
+---------
+
+The code is essentially undocumented, there's no error handling to speak of,
+and this is the first time I've used [Repa](http://www.haskell.org/haskellwiki/Numeric_Haskell:_A_Repa_Tutorial),
+so I'm sure what I'm doing with it is horribly inefficient.
+
 Examples
 --------
 
