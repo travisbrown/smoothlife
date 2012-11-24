@@ -21,11 +21,11 @@ so I'm sure what I'm doing with it is horribly inefficient.
 
 A few more concrete things:
 
- * The input image can be in any format supported by [DevIL](http://hackage.haskell.org/package/repa-devil-0.3.2),
+ * The input can be any image format supported by [DevIL](http://hackage.haskell.org/package/repa-devil-0.3.2),
    but it must be a square whose sides are a power of two, and it must be
    grayscale.
- * The program won't overwrite existing files, so you'll have to manually
-   delete the contents of the output directory (or specify a new one).
+ * The program won't overwrite existing files, so you'll have to clear the
+   output directory manually between runs (or specify a new one).
 
 Examples
 --------
