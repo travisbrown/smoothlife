@@ -41,7 +41,7 @@ The following should work:
     dist/build/smoothlife/smoothlife \
       -c=samples/config.txt -i=samples/squiggles.png -o=output
 
-This will save an image to the `output` after every time step.
+This will save an image to the `output` directory after every time step.
 
 You can easily change the rules of the game by editing the config file, or
 providing your own. The current defaults look like this:
