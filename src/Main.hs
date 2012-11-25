@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TupleSections #-}
 import Control.Applicative ((<$>), (<*>))
 import Control.Monad.Loops (iterateM_)
 import qualified Data.Array.Repa as R
@@ -51,14 +51,14 @@ processConfig c = do
 
 main = do
   SmoothLife configFile outDir input n <- cmdArgs smoothLifeMode
-  Right config <- (>>= processConfig) <$> readfile emptyCP configFile
+  Right conf <- (>>= processConfig) <$> readfile emptyCP configFile
 
   start <- maybe (randomF n <$> getStdGen) readGrey input
 
-  let (innerW, outerW) = initWeights n $ radii config
+  (innerW, outerW) <- initWeights n $ radii conf
   let writeAndStep (f, i) =
-        writeGrey (outDir </> (printf "%06d.png" i)) f >> 
-        return (step config innerW outerW f, i + 1)
+        writeGrey (outDir </> (printf "%06d.png" i)) f >>
+        (, i + 1) <$> step conf innerW outerW f
 
   iterateM_ writeAndStep (R.delay $ start, 0 :: Int)
 

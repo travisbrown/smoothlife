@@ -3,8 +3,8 @@ module GenArt.SmoothLife (Config (Config), radii, step, initWeights) where
 
 import Control.Applicative ((<$>), (<*>))
 import qualified Data.Array.Repa as R
+import Data.Array.Repa.Algorithms.Complex
 import Data.Array.Repa.Algorithms.FFT (Mode (Forward, Inverse), fft2dP)
-import Data.Array.Repa.Eval as RE
 import Data.Array.Repa.Index ((:.) ((:.)), DIM2, Z (Z))
 
 data Config = Config
@@ -27,16 +27,17 @@ bessel n radius = R.fromFunction (Z :. s :. s :: DIM2) f
         j' = mod (j + h) s - h
         r = sqrt $ fromIntegral (i' * i') + fromIntegral (j' * j')
 
-initWeights n (innerRadius, outerRadius) = (innerW, outerW)
-  where
-    innerW = R.map (/ (innerSum, 0)) inner
-    outerW = R.map (/ (outerSum - innerSum, 0)) $ R.zipWith (-) outer inner
-    innerBessel = bessel n innerRadius
-    outerBessel = bessel n outerRadius
-    innerSum = R.sumAllS innerBessel
-    outerSum = R.sumAllS outerBessel
-    inner = head . fft2dP Forward $ toComplex innerBessel
-    outer = head . fft2dP Forward $ toComplex outerBessel
+initWeights n (innerRadius, outerRadius) = do
+  let innerBessel = bessel n innerRadius
+  let outerBessel = bessel n outerRadius
+  inner <- fft2dP Forward $ toComplex innerBessel
+  outer <- fft2dP Forward $ toComplex outerBessel
+  let diff = R.zipWith (-) outer inner
+  let innerSum = R.sumAllS innerBessel
+  let outerSum = R.sumAllS outerBessel
+  innerW <- R.computeUnboxedP $ R.map (/ (innerSum, 0)) inner
+  outerW <- R.computeUnboxedP $ R.map (/ (outerSum - innerSum, 0)) diff
+  return (innerW, outerW)
 
 -- Our state transition function.
 {-# INLINE s #-}
@@ -49,9 +50,9 @@ s (Config (innerAlpha, outerAlpha) _ (b1, b2) (d1, d2)) inner outer =
     sigma2 alpha x a b = sigma alpha x a * (1 - sigma alpha x b)
 
 {-# INLINE step #-}
-step config innerW outerW f = head $ do
+step config innerW outerW f = do
   f' <- fft2dP Forward $ toComplex f
   inner <- fft2dP Inverse $ R.zipWith (*) f' innerW
   outer <- fft2dP Inverse $ R.zipWith (*) f' outerW
-  return $ R.zipWith (\i o -> s config (fst i) (fst o)) inner outer
+  return $ R.zipWith (\(i, _) (o, _) -> s config i o) inner outer
 

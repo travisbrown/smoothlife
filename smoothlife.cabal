@@ -9,6 +9,7 @@ build-type:    Simple
 cabal-version: >= 1.2
 
 library
+  ghc-options:     -Wall -O2 -rtsopts -threaded
   hs-source-dirs:  src
   exposed-modules: GenArt.SmoothLife
   build-depends:
@@ -23,6 +24,7 @@ library
     repa-devil >= 0.3.2
 
 executable smoothlife
+  ghc-options:     -Wall -O2 -rtsopts -threaded
   hs-source-dirs:  src
   main-is:         Main.hs
 
