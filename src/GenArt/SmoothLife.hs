@@ -1,9 +1,7 @@
-{-# LANGUAGE TupleSections #-}
+{-# LANGUAGE BangPatterns, TupleSections #-}
 module GenArt.SmoothLife (Config (Config), radii, step, initWeights) where
 
-import Control.Applicative ((<$>), (<*>))
 import qualified Data.Array.Repa as R
-import Data.Array.Repa.Algorithms.Complex
 import Data.Array.Repa.Algorithms.FFT (Mode (Forward, Inverse), fft2dP)
 import Data.Array.Repa.Index ((:.) ((:.)), DIM2, Z (Z))
 
@@ -44,15 +42,18 @@ initWeights n (innerRadius, outerRadius) = do
 s (Config (innerAlpha, outerAlpha) _ (b1, b2) (d1, d2)) inner outer =
   sigma2 outerAlpha outer (lerp b1 d1 alive) (lerp b2 d2 alive)
   where
-    alive = sigma innerAlpha inner 0.5 
-    lerp a b t = a * (1 - t) + b * t
-    sigma alpha x a = 1 / (1 + exp (4 / alpha * (a - x)))
-    sigma2 alpha x a b = sigma alpha x a * (1 - sigma alpha x b)
+    alive = sigma innerAlpha inner 0.5
+    {-# INLINE lerp #-}
+    lerp !a !b !t = a * (1 - t) + b * t
+    {-# INLINE sigma #-}
+    sigma alpha !x !a = 1 / (1 + exp (4 / alpha * (a - x)))
+    {-# INLINE sigma2 #-}
+    sigma2 alpha !x !a !b = sigma alpha x a * (1 - sigma alpha x b)
 
 {-# INLINE step #-}
 step config innerW outerW f = do
   f' <- fft2dP Forward $ toComplex f
   inner <- fft2dP Inverse $ R.zipWith (*) f' innerW
   outer <- fft2dP Inverse $ R.zipWith (*) f' outerW
-  return $ R.zipWith (\(i, _) (o, _) -> s config i o) inner outer
+  return $ R.zipWith (\(!i, _) (!o, _) -> s config i o) inner outer
 
