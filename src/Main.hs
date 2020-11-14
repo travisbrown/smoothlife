@@ -1,11 +1,14 @@
-{-# LANGUAGE DeriveDataTypeable, TupleSections #-}
+{-# LANGUAGE DeriveDataTypeable, NoMonadFailDesugaring, TupleSections #-}
 import Control.Applicative ((<$>), (<*>))
 import Control.Monad.Loops (iterateM_)
 import qualified Data.Array.Repa as R
 import Data.Array.Repa.Index ((:.) ((:.)), DIM2, Z (Z))
-import Data.Array.Repa.IO.DevIL
 import Data.ConfigFile
 import GenArt.SmoothLife
+import Graphics.Image (RPU (RPU), readImageY,  writeImage)
+import Graphics.Image.Interface (getPxC)
+import Graphics.Image.Interface.Repa (fromRepaArrayP, toRepaArray)
+import Graphics.Image.Types (Pixel (PixelY), Y (LumaY))
 import System.Console.CmdArgs
 import System.FilePath ((</>))
 import System.Random (getStdGen, randoms)
@@ -34,12 +37,12 @@ randomF n = R.fromListUnboxed (Z :. s :. s :: DIM2) . take (s * s) . randoms
   where
     s = 2 ^ n
 
-readGrey path = do
-  Grey image <- runIL $ readImage path
-  return . R.computeS . R.map ((/ 256) . fromIntegral) $ image
+readGrey :: FilePath -> IO (R.Array R.U DIM2 Double)
+readGrey path = R.computeS . R.map (\p -> getPxC p LumaY) . toRepaArray <$> readImageY RPU path
 
-writeGrey path =
-  runIL . writeImage path . Grey . R.computeS . R.map (round . (* 255))
+writeGrey :: FilePath -> R.Array R.D DIM2 Double -> IO ()
+writeGrey path arr =
+  writeImage path . fromRepaArrayP . R.map (PixelY) $ arr
 
 processConfig :: ConfigParser -> Either CPError Config
 processConfig c = do

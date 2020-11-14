@@ -1,0 +1,7 @@
+resolver: lts-14.27
+packages:
+- .
+extra-deps:
+  - ConfigFile-1.1.4
+  - hip-1.5.6.0
+  - JuicyPixels-3.3.5

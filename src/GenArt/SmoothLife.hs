@@ -1,4 +1,4 @@
-{-# LANGUAGE BangPatterns, TupleSections #-}
+{-# LANGUAGE BangPatterns, FlexibleContexts, TupleSections #-}
 module GenArt.SmoothLife (Config (Config), radii, step, initWeights) where
 
 import qualified Data.Array.Repa as R
@@ -12,7 +12,7 @@ data Config = Config
   , death  :: (Double, Double)
   }
 
-{-# INLINE toComplex #-}
+
 toComplex = R.map (, 0)
 
 bessel n radius = R.fromFunction (Z :. s :. s :: DIM2) f
@@ -38,19 +38,19 @@ initWeights n (innerRadius, outerRadius) = do
   return (innerW, outerW)
 
 -- Our state transition function.
-{-# INLINE s #-}
+
 s (Config (innerAlpha, outerAlpha) _ (b1, b2) (d1, d2)) inner outer =
   sigma2 outerAlpha outer (lerp b1 d1 alive) (lerp b2 d2 alive)
   where
     alive = sigma innerAlpha inner 0.5
-    {-# INLINE lerp #-}
+
     lerp !a !b !t = a * (1 - t) + b * t
-    {-# INLINE sigma #-}
+
     sigma alpha !x !a = 1 / (1 + exp (4 / alpha * (a - x)))
-    {-# INLINE sigma2 #-}
+
     sigma2 alpha !x !a !b = sigma alpha x a * (1 - sigma alpha x b)
 
-{-# INLINE step #-}
+
 step config innerW outerW f = do
   f' <- fft2dP Forward $ toComplex f
   inner <- fft2dP Inverse $ R.zipWith (*) f' innerW

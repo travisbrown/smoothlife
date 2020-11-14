@@ -36,10 +36,9 @@ Usage
 
 The following should work:
 
-    cabal build
-    mkdir output
-    dist/build/smoothlife/smoothlife \
-      -c=samples/config.txt -i=samples/squiggles.png -o=output
+```bash
+stack run -- -c=samples/config.txt -i=samples/squiggles.png -o=output
+```
 
 This will save an image to the `output` directory after every time step.
 
